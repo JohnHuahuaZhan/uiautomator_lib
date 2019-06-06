@@ -11,7 +11,7 @@ import androidx.test.uiautomator.Until;
 
 import com.uiautomator.lib.support.conditions.Condition;
 import com.uiautomator.lib.support.context.TestContext;
-import com.uiautomator.lib.support.time.IProvider;
+import com.uiautomator.lib.support.time.IParamProvider;
 
 import java.util.List;
 
@@ -92,7 +92,7 @@ public class BasePageObject {
         }, by,  pollingEvery, timeout, runnable);
 
     }
-    protected UiObject2 findObject(BySelector by, long timeout, Runnable runnable, IProvider<Boolean> provider){
+    protected UiObject2 findObject(BySelector by, long timeout, Runnable runnable, IParamProvider<Boolean, UiObject2>  provider){
        return  Condition.waitForCondition(()->{
             return device;
         }, by,  pollingEvery, timeout, runnable, provider);

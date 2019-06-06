@@ -35,6 +35,7 @@ public class LoginService extends CommonService {
         splashActivityPO.clickStartBtn();
     }
     public void doGoToLogin() {
+        mainActivityPO.clickGuideBtn();
         mainActivityPO.clickUserLogo();
     }
     //单独的步骤无需校验

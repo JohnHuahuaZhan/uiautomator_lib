@@ -5,6 +5,7 @@ import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
 
 import com.uiautomator.lib.support.time.FluentWait;
+import com.uiautomator.lib.support.time.IParamProvider;
 import com.uiautomator.lib.support.time.IProvider;
 
 import org.hamcrest.Matcher;
@@ -23,7 +24,7 @@ public class Condition {
         fluentWait.pollingEvery(pollingEvery).withTimeout(timeout);
         return fluentWait.until(ExpectedConditions.find(bySelector), runnable);
     }
-    public static UiObject2 waitForCondition(IProvider<UiDevice> actual, BySelector bySelector, long  pollingEvery, long timeout, Runnable runnable, IProvider<Boolean> provider){
+    public static UiObject2 waitForCondition(IProvider<UiDevice> actual, BySelector bySelector, long  pollingEvery, long timeout, Runnable runnable, IParamProvider<Boolean, UiObject2> provider ){
         FluentWait<UiDevice> fluentWait = new FluentWait<>(actual);
         fluentWait.pollingEvery(pollingEvery).withTimeout(timeout);
         return fluentWait.until(ExpectedConditions.find(bySelector, provider), runnable);
