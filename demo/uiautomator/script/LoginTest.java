@@ -19,11 +19,8 @@ package com.example.uiautomator.script;
 
 import android.Manifest;
 
-import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SdkSuppress;
 import androidx.test.rule.GrantPermissionRule;
-import androidx.test.uiautomator.By;
-import androidx.test.uiautomator.UiObject2;
 
 import com.example.uiautomator.service.basic.LoginService;
 import com.uiautomator.lib.support.rule.TestWatcherRule;
@@ -40,7 +37,7 @@ import java.util.Collection;
 /**
  * Basic sample for unbundled UiAutomator.
  */
-@RunWith(AndroidJUnit4.class)
+@RunWith(Parameterized.class)
 @SdkSuppress(minSdkVersion = 19)
 public class LoginTest extends CommonTest {
 
@@ -71,13 +68,9 @@ public class LoginTest extends CommonTest {
         loginService = new LoginService(tag, memo, cell, password);
     }
 
+    @Test
     public void login() {
         loginService.login();
     }
 
-    @Test
-    public void test() {
-        UiObject2 uiObject2 = getDevice().findObject(By.res("com.android.kktribe:id/new_user_logo_iv"));
-        System.out.println();
-    }
 }
