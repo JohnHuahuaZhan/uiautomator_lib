@@ -2,6 +2,7 @@ package com.example.uiautomator.po.app;
 
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
+import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
 
 import com.example.uiautomator.po.CommonPo;
@@ -16,7 +17,7 @@ public class MainActivityPO extends CommonPo {
     //selectors
     protected BySelector userLogoSelector = By.res(packageName,"new_user_logo_iv");
 
-
+    protected BySelector recycleListSelector = By.res(packageName, "recycleList");
 
     //watchers
     protected BySelector guideBtnSelector = By.res(packageName,"guide_btn");
@@ -36,6 +37,9 @@ public class MainActivityPO extends CommonPo {
         WatcherManager.getInstance().resetWatcherTriggers();
         UiObject2 btnObject = findObject(guideBtnSelector, find_timeout, ()->{
             WatcherManager.getInstance().runWatchers();
+            UiObject2 sc = findObject(recycleListSelector);
+            if(sc != null)
+                sc.fling(Direction.UP);//刷新使得“我知道了”弹出【如果没弹出的话】
         });
         if(null == btnObject)
             throw  new UIAutomatorTestException("首页找不到欢迎页'我知道了'");

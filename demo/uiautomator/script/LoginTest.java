@@ -68,6 +68,7 @@ public class LoginTest extends CommonTest {
         loginService = new LoginService(tag, memo, cell, password);
     }
 
+
     @Test
     public void login() {
         loginService.login();

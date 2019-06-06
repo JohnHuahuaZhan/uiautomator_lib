@@ -28,7 +28,7 @@ public class SplashActivityPO extends CommonPo {
     }
     public void clickStartBtn(){
         UiObject2 btnObject = findObject(startBtnSelector, find_timeout, ()->{
-            pass();
+            pass();//找不到就多fling几次
         });
         if(null == btnObject)
             throw  new UIAutomatorTestException("向导页找不到立即体验按钮");
