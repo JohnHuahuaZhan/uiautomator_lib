@@ -95,7 +95,7 @@ public class BasePageObject {
     protected UiObject2 findObject(BySelector by, long timeout, Runnable runnable, IProvider<Boolean> provider){
        return  Condition.waitForCondition(()->{
             return device;
-        }, by,  pollingEvery, timeout, runnable);
+        }, by,  pollingEvery, timeout, runnable, provider);
 
     }
     /**
