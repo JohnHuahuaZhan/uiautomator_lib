@@ -10,11 +10,7 @@ import androidx.test.uiautomator.UiSelector;
 import androidx.test.uiautomator.Until;
 
 import com.uiautomator.lib.support.conditions.Condition;
-import com.uiautomator.lib.support.context.Configurator;
 import com.uiautomator.lib.support.context.TestContext;
-import com.uiautomator.lib.support.time.IProvider;
-
-import org.hamcrest.Matcher;
 
 import java.util.List;
 
@@ -31,7 +27,46 @@ public class BasePageObject {
     public UiDevice getDevice() {
         return device;
     }
+    protected String packageName;
+    protected long find_timeout;
+    protected long pollingEvery;
+    public BasePageObject(String packageName, long find_timeout) {
+        this.packageName = packageName;
+        this.find_timeout = find_timeout;
+    }
 
+    public BasePageObject(String packageName, long find_timeout, long defaultPollingEvery) {
+        this.packageName = packageName;
+        this.find_timeout = find_timeout;
+        this.pollingEvery = defaultPollingEvery;
+    }
+
+    public long getPollingEvery() {
+        return pollingEvery;
+    }
+
+    public void setPollingEvery(long pollingEvery) {
+        this.pollingEvery = pollingEvery;
+    }
+
+    public BasePageObject() {
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
+    public long getFind_timeout() {
+        return find_timeout;
+    }
+
+    public void setFind_timeout(long find_timeout) {
+        this.find_timeout = find_timeout;
+    }
     /**
      * 返回一个找到的UIObject2，如果找不到返回null
      * @param by
@@ -53,7 +88,7 @@ public class BasePageObject {
     protected UiObject2 findObject(BySelector by, long timeout, Runnable runnable){
         Condition.waitForCondition(()->{
             return device;
-        }, by,  Configurator.defaultPollingEvery, timeout, runnable);
+        }, by,  pollingEvery, timeout, runnable);
         return device.wait(Until.findObject(by), timeout);
     }
     /**
@@ -127,9 +162,5 @@ public class BasePageObject {
     }
     public BySelector resBy(String resourcePackage, String resourceId){
         return By.res(resString(resourcePackage, resourceId));
-    }
-
-    public <T> Boolean waitForCondition(Matcher<T> matcher, IProvider<T> actual, long timeout){
-        return Condition.waitForCondition(matcher, actual,  Configurator.defaultPollingEvery, timeout);
     }
 }
