@@ -9,6 +9,7 @@ import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject2;
 
 import com.uiautomator.lib.support.interfaces.Function;
+import com.uiautomator.lib.support.time.IProvider;
 
 import org.hamcrest.Matcher;
 
@@ -27,6 +28,17 @@ public class ExpectedConditions {
         return new Function<UiDevice, UiObject2>() {
             @Override
             public UiObject2 apply(UiDevice t) {
+                return t.findObject(bySelector);
+            }
+        };
+    }
+
+    public  static Function<UiDevice, UiObject2> find(BySelector bySelector, IProvider<Boolean> provider ){
+        return new Function<UiDevice, UiObject2>() {
+            @Override
+            public UiObject2 apply(UiDevice t) {
+                if(!provider.get())
+                    return null;
                 return t.findObject(bySelector);
             }
         };

@@ -15,6 +15,7 @@ import com.uiautomator.lib.support.util.ScreenShot;
 
 import org.hamcrest.Matcher;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
@@ -132,6 +133,20 @@ public class BaseService {
         return executeShell(String.format("pm clear %s", packageName));
     }
 
+    /**
+     * dump 失败返回null
+     * @return
+     */
+    public byte[] dump(){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        try {
+            getDevice().dumpWindowHierarchy(byteArrayOutputStream);
+            return byteArrayOutputStream.toByteArray();
+        } catch (IOException e) {
+            UIAutomatorLogger.e("dump failed");
+            return null;
+        }
+    }
     /**
      * 截图失败返回false
      * @return

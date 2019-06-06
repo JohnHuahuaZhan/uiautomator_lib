@@ -19,8 +19,11 @@ package com.example.uiautomator.script;
 
 import android.Manifest;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SdkSuppress;
 import androidx.test.rule.GrantPermissionRule;
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.UiObject2;
 
 import com.example.uiautomator.service.basic.LoginService;
 import com.uiautomator.lib.support.rule.TestWatcherRule;
@@ -37,7 +40,7 @@ import java.util.Collection;
 /**
  * Basic sample for unbundled UiAutomator.
  */
-@RunWith(Parameterized.class)
+@RunWith(AndroidJUnit4.class)
 @SdkSuppress(minSdkVersion = 19)
 public class LoginTest extends CommonTest {
 
@@ -58,7 +61,7 @@ public class LoginTest extends CommonTest {
     @Parameterized.Parameters(name = "{index}: 【{0}】(cell:{1},password{2})")
     public static Collection primeNumbers() {
         return Arrays.asList(new Object[][] {
-                { "正常登录","17300000001", "123456","success" },
+                { "正常登录","17300000002", "123456","success" },
                 {"密码错误", "17300000002", "1234567","fail"},
         });
     }
@@ -67,8 +70,14 @@ public class LoginTest extends CommonTest {
     public void setUp() {
         loginService = new LoginService(tag, memo, cell, password);
     }
-    @Test
+
     public void login() {
         loginService.login();
+    }
+
+    @Test
+    public void test() {
+        UiObject2 uiObject2 = getDevice().findObject(By.res("com.android.kktribe:id/new_user_logo_iv"));
+        System.out.println();
     }
 }

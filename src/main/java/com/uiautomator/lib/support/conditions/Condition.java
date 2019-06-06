@@ -23,4 +23,9 @@ public class Condition {
         fluentWait.pollingEvery(pollingEvery).withTimeout(timeout);
         return fluentWait.until(ExpectedConditions.find(bySelector), runnable);
     }
+    public static UiObject2 waitForCondition(IProvider<UiDevice> actual, BySelector bySelector, long  pollingEvery, long timeout, Runnable runnable, IProvider<Boolean> provider){
+        FluentWait<UiDevice> fluentWait = new FluentWait<>(actual);
+        fluentWait.pollingEvery(pollingEvery).withTimeout(timeout);
+        return fluentWait.until(ExpectedConditions.find(bySelector, provider), runnable);
+    }
 }

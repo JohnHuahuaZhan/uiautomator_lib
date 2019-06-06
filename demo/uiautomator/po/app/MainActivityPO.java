@@ -40,6 +40,8 @@ public class MainActivityPO extends CommonPo {
         WatcherManager.getInstance().registerWatcher(guide_trigger, new GuideWatcher(guideBtnSelector, getDevice()));
         UiObject2 object = findObject(selector, find_timeout, ()->{
             WatcherManager.getInstance().runWatchers();
+        }, ()->{
+            return findObject(userLogoSelector) == null;
         });
         return object;
     }

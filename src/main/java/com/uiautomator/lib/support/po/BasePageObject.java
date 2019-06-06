@@ -11,6 +11,7 @@ import androidx.test.uiautomator.Until;
 
 import com.uiautomator.lib.support.conditions.Condition;
 import com.uiautomator.lib.support.context.TestContext;
+import com.uiautomator.lib.support.time.IProvider;
 
 import java.util.List;
 
@@ -86,10 +87,16 @@ public class BasePageObject {
         return device.wait(Until.findObject(by), timeout);
     }
     protected UiObject2 findObject(BySelector by, long timeout, Runnable runnable){
-        Condition.waitForCondition(()->{
+         return Condition.waitForCondition(()->{
             return device;
         }, by,  pollingEvery, timeout, runnable);
-        return device.wait(Until.findObject(by), timeout);
+
+    }
+    protected UiObject2 findObject(BySelector by, long timeout, Runnable runnable, IProvider<Boolean> provider){
+       return  Condition.waitForCondition(()->{
+            return device;
+        }, by,  pollingEvery, timeout, runnable);
+
     }
     /**
      * 返回一个找到的UIObject2列表，如果找不到返回空列表
