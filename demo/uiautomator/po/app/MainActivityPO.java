@@ -25,12 +25,9 @@ public class MainActivityPO extends CommonPo {
 
     //action
     public void clickUserLogo(){
-        WatcherManager.getInstance().resetWatcherTriggers();
-        UiObject2 btnObject = findObject(userLogoSelector, find_timeout, ()->{
-            WatcherManager.getInstance().runWatchers();
-        });
+        UiObject2 btnObject = findObject(userLogoSelector, find_timeout);
         if(null == btnObject)
-                throw  new UIAutomatorTestException("首页找不到左上角'用户头像'");
+            throw  new UIAutomatorTestException("首页找不到左上角'用户头像'");
         btnObject.click();
     }
     public void clickGuideBtn(){
