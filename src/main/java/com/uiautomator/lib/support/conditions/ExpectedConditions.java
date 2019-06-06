@@ -4,6 +4,10 @@
  */
 package com.uiautomator.lib.support.conditions;
 
+import androidx.test.uiautomator.BySelector;
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObject2;
+
 import com.uiautomator.lib.support.interfaces.Function;
 
 import org.hamcrest.Matcher;
@@ -17,5 +21,14 @@ public class ExpectedConditions {
                return matcher.matches(t);
            }
        };
+    }
+
+    public  static  Function<UiDevice, UiObject2> find(BySelector bySelector){
+        return new Function<UiDevice, UiObject2>() {
+            @Override
+            public UiObject2 apply(UiDevice t) {
+                return t.findObject(bySelector);
+            }
+        };
     }
 }

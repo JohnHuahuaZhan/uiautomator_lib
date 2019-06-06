@@ -6,10 +6,10 @@ import android.os.RemoteException;
 import androidx.test.uiautomator.UiDevice;
 
 import com.uiautomator.lib.support.asserts.TestAssert;
-import com.uiautomator.lib.support.conditions.ExpectedConditions;
+import com.uiautomator.lib.support.conditions.Condition;
+import com.uiautomator.lib.support.context.Configurator;
 import com.uiautomator.lib.support.context.TestContext;
 import com.uiautomator.lib.support.log.UIAutomatorLogger;
-import com.uiautomator.lib.support.time.FluentWait;
 import com.uiautomator.lib.support.time.IProvider;
 import com.uiautomator.lib.support.time.Sleeper;
 import com.uiautomator.lib.support.util.ScreenShot;
@@ -21,7 +21,7 @@ import java.io.IOException;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 public class BaseTest {
-    public static final long defaultPollingEvery = 1000;
+    public static final long defaultPollingEvery = Configurator.defaultPollingEvery;
 
 
     private UiDevice device = UiDevice.getInstance(getInstrumentation());
@@ -67,12 +67,30 @@ public class BaseTest {
             return null;
         }
     }
+    public String grantPermission(String packageName, String ... permissions){
+        StringBuffer stringBuffer = new StringBuffer("pm grant "+packageName);
+        if (null != permissions && permissions.length > 0){
+            for (String permission : permissions) {
+                stringBuffer.append(String.format(" %s", permission));
+            }
+        }
+        return  executeShell(stringBuffer.toString());
+    }
     public void startApp(String packageName){
         final Intent intent = testContext.getLaunchIntentForPackage(packageName);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);    // Clear out any previous instances
         testContext.startActivity(intent);
     }
 
+    /**
+     * 兼容
+     * @param packageName
+     * @param mainActivity
+     * @return
+     */
+    public String startApp(String packageName, String  mainActivity){
+        return executeShell(String.format("am start %s/%s", packageName, mainActivity));
+    }
     /**
      * since api 21
      * @param packageName
@@ -106,9 +124,7 @@ public class BaseTest {
         }
     }
     public <T> Boolean waitForCondition(Matcher<T> matcher, IProvider<T> actual, long timeout){
-        FluentWait<T> fluentWait = new FluentWait<>(actual);
-        fluentWait.pollingEvery(defaultPollingEvery).withTimeout(timeout);
-        return fluentWait.until(ExpectedConditions.match(matcher));
+        return Condition.waitForCondition(matcher, actual, defaultPollingEvery, timeout);
     }
 
     public <T>void assertThat(String reason, T actual, Matcher<? super T> matcher, Runnable callback){

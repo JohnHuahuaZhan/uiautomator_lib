@@ -161,7 +161,7 @@ public class FluentWait<T> implements Wait<T> {
      *         from null or false before the timeout expired.
      */
     @Override
-    public <V> V until(Function<? super T, V> isTrue) {
+    public <V> V until(Function<? super T, V> isTrue, Runnable runnable) {
         long end = clock.laterBy(timeout);
         Throwable lastException;
         while (true) {
@@ -192,6 +192,8 @@ public class FluentWait<T> implements Wait<T> {
                 Thread.currentThread().interrupt();
                 throw new UIAutomatorTestException(e);
             }
+            if(runnable != null)
+                runnable.run();
         }
     }
 

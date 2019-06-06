@@ -8,5 +8,5 @@ package com.uiautomator.lib.support.time;
 import com.uiautomator.lib.support.interfaces.Function;
 
 public interface Wait<F> {
-    <T> T until(Function<? super F, T> function);
+    <T> T until(Function<? super F, T> function, Runnable runnable);
 }

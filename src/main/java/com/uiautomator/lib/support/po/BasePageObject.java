@@ -9,14 +9,18 @@ import androidx.test.uiautomator.UiScrollable;
 import androidx.test.uiautomator.UiSelector;
 import androidx.test.uiautomator.Until;
 
+import com.uiautomator.lib.support.conditions.Condition;
+import com.uiautomator.lib.support.context.Configurator;
 import com.uiautomator.lib.support.context.TestContext;
+import com.uiautomator.lib.support.time.IProvider;
+
+import org.hamcrest.Matcher;
 
 import java.util.List;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 public class BasePageObject {
-
     protected UiDevice device = UiDevice.getInstance(getInstrumentation());
     protected TestContext context = TestContext.getInstance();
 
@@ -44,6 +48,12 @@ public class BasePageObject {
      * @return
      */
     protected UiObject2 findObject(BySelector by, long timeout){
+        return device.wait(Until.findObject(by), timeout);
+    }
+    protected UiObject2 findObject(BySelector by, long timeout, Runnable runnable){
+        Condition.waitForCondition(()->{
+            return device;
+        }, by,  Configurator.defaultPollingEvery, timeout, runnable);
         return device.wait(Until.findObject(by), timeout);
     }
     /**
@@ -117,5 +127,9 @@ public class BasePageObject {
     }
     public BySelector resBy(String resourcePackage, String resourceId){
         return By.res(resString(resourcePackage, resourceId));
+    }
+
+    public <T> Boolean waitForCondition(Matcher<T> matcher, IProvider<T> actual, long timeout){
+        return Condition.waitForCondition(matcher, actual,  Configurator.defaultPollingEvery, timeout);
     }
 }
