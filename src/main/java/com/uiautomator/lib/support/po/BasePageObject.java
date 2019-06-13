@@ -5,13 +5,17 @@ import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiScrollable;
 import androidx.test.uiautomator.UiSelector;
 import androidx.test.uiautomator.Until;
 
 import com.uiautomator.lib.support.conditions.Condition;
 import com.uiautomator.lib.support.context.TestContext;
+import com.uiautomator.lib.support.log.UIAutomatorLogger;
 import com.uiautomator.lib.support.time.IParamProvider;
+
+import org.hamcrest.CoreMatchers;
 
 import java.util.List;
 
@@ -36,10 +40,10 @@ public class BasePageObject {
         this.find_timeout = find_timeout;
     }
 
-    public BasePageObject(String packageName, long find_timeout, long defaultPollingEvery) {
+    public BasePageObject(String packageName, long find_timeout, long pollingEvery) {
         this.packageName = packageName;
         this.find_timeout = find_timeout;
-        this.pollingEvery = defaultPollingEvery;
+        this.pollingEvery = pollingEvery;
     }
 
     public long getPollingEvery() {
@@ -53,6 +57,9 @@ public class BasePageObject {
     public BasePageObject() {
     }
 
+    public UiSelector us(){
+        return new UiSelector();
+    }
     public String getPackageName() {
         return packageName;
     }
@@ -106,8 +113,26 @@ public class BasePageObject {
     protected List<UiObject2> findObjects(BySelector by) {
         return device.findObjects(by);
     }
-
-
+    /**
+     * 返回一个找到的UIObject2列表，如果找不到返回null
+     * @param by
+     * @return
+     */
+    protected List<UiObject2> findObjects(BySelector by, int expectedSize, long timeout, Runnable runnable) {
+        boolean b = Condition.waitForCondition(CoreMatchers.equalTo(expectedSize),()-> findObjects(by).size(),  pollingEvery, timeout, runnable);
+        if(!b)
+            return null;
+        else
+            return findObjects(by);
+    }
+    /**
+     * 返回一个找到的UIObject2列表，如果找不到返回null
+     * @param by
+     * @return
+     */
+    protected List<UiObject2> findObjects(BySelector by, int expectedSize, long timeout) {
+       return findObjects(by, expectedSize, timeout,()->{});
+    }
 
 
         /**
@@ -169,5 +194,49 @@ public class BasePageObject {
     }
     public BySelector resBy(String resourcePackage, String resourceId){
         return By.res(resString(resourcePackage, resourceId));
+    }
+
+    public boolean clickIgnoreException(UiObject object){
+        try {
+            object.click();
+            return true;
+        } catch (UiObjectNotFoundException e) {
+            UIAutomatorLogger.e(e.getMessage());
+            return false;
+        }
+    }
+    public boolean textIgnoreException(UiObject object, String text){
+        try {
+            object.setText(text);
+            return true;
+        } catch (UiObjectNotFoundException e) {
+            UIAutomatorLogger.e(e.getMessage());
+            return false;
+        }
+    }
+    public String getTextIgnoreException(UiObject object){
+        try {
+            return object.getText();
+        } catch (UiObjectNotFoundException e) {
+            UIAutomatorLogger.e(e.getMessage());
+            return null;
+        }
+    }
+    public boolean swipeDownIgnoreException(UiObject object, int steps){
+        try {
+            return object.swipeDown(steps);
+        } catch (UiObjectNotFoundException e) {
+            UIAutomatorLogger.e(e.getMessage());
+            return false;
+        }
+    }
+    public boolean
+    swipeUpIgnoreException(UiObject object, int steps){
+        try {
+            return object.swipeUp(steps);
+        } catch (UiObjectNotFoundException e) {
+            UIAutomatorLogger.e(e.getMessage());
+            return false;
+        }
     }
 }
