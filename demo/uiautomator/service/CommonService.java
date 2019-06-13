@@ -1,6 +1,6 @@
-package com.example.uiautomator.service;
+package com.example.uiautomator.kksport.service;
 
-import com.example.uiautomator.R;
+import com.example.uiautomator.kksport.R;
 import com.uiautomator.lib.support.service.BaseService;
 
 public class CommonService extends BaseService {

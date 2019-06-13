@@ -1,4 +1,4 @@
-package com.example.uiautomator.script;
+package com.example.uiautomator.kksport.script;
 
 /*
  * Copyright 2015, The Android Open Source Project
@@ -22,7 +22,7 @@ import android.Manifest;
 import androidx.test.filters.SdkSuppress;
 import androidx.test.rule.GrantPermissionRule;
 
-import com.example.uiautomator.service.basic.LoginService;
+import com.example.uiautomator.kksport.service.basic.LoginService;
 import com.uiautomator.lib.support.rule.TestWatcherRule;
 
 import org.junit.Before;

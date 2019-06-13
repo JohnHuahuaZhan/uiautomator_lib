@@ -1,12 +1,10 @@
 apply plugin: 'com.android.library'
-apply plugin: 'maven'
-
 android {
     compileSdkVersion 28
-
+    buildToolsVersion buildToolsVersion
 
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -26,16 +24,26 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
+ext {
+    buildToolsVersion = "28.0.3"
+    androidxLibVersion = "1.0.0"
 
+    ruleVersion='1.1.1'
+    truthVersion = '1.1.0'
+    coreVersion = "1.1.0"
+    extJUnitVersion = "1.1.0"
+    runnerVersion = "1.1.1"
+    uiautomatorVersion = "2.2.0"
+}
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // AndroidJUnitRunner and JUnit Rules
     // Testing-only dependencies
-    api 'androidx.test:runner:' + rootProject.runnerVersion //运行器库
-    api 'androidx.test.ext:junit:' + rootProject.extJUnitVersion //junit扩展库包括一个runner以及扩展的rule
-    api 'androidx.test:rules:' + rootProject.ruleVersion //其他常用rule
-    api 'androidx.test.uiautomator:uiautomator:' + rootProject.uiautomatorVersion;
+    api 'androidx.test:runner:' + runnerVersion //运行器库
+    api 'androidx.test.ext:junit:' + extJUnitVersion //junit扩展库包括一个runner以及扩展的rule
+    api 'androidx.test:rules:' + ruleVersion //其他常用rule
+    api 'androidx.test.uiautomator:uiautomator:' +uiautomatorVersion;
     api 'org.hamcrest:hamcrest-integration:1.3'
     api 'com.google.guava:guava:26.0-android'
 }

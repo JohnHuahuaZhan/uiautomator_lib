@@ -1,4 +1,4 @@
-package com.example.uiautomator.po;
+package com.example.uiautomator.kksport.po;
 
 import com.uiautomator.lib.support.po.BasePageObject;
 
