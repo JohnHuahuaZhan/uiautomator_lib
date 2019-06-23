@@ -12,6 +12,7 @@ import androidx.test.uiautomator.Until;
 
 import com.uiautomator.lib.support.conditions.Condition;
 import com.uiautomator.lib.support.context.TestContext;
+import com.uiautomator.lib.support.exception.UIAutomatorTestException;
 import com.uiautomator.lib.support.log.UIAutomatorLogger;
 import com.uiautomator.lib.support.time.IParamProvider;
 
@@ -93,6 +94,18 @@ public class BasePageObject {
     protected UiObject2 findObject(BySelector by, long timeout){
         return device.wait(Until.findObject(by), timeout);
     }
+    protected UiObject2 mustFindObject(BySelector by, long timeout, String message){
+        UiObject2 object = findObject(by, timeout);
+        if(null == object)
+            throw  new UIAutomatorTestException(message);
+        return object;
+    }
+    protected UiObject2 mustFindObject(BySelector by, String message){
+        UiObject2 object = findObject(by);
+        if(null == object)
+            throw  new UIAutomatorTestException(message);
+        return object;
+    }
     protected UiObject2 findObject(BySelector by, long timeout, Runnable runnable){
          return Condition.waitForCondition(()->{
             return device;
@@ -163,7 +176,17 @@ public class BasePageObject {
     protected UiObject2 findObject(UiObject2 uiObject2, BySelector by){
         return uiObject2.findObject(by);
     }
-
+    /**
+     * 返回一个找到的UIObject2，如果找不到返回null
+     * @param by
+     * @return
+     */
+    protected UiObject2 mustFindObject(UiObject2 uiObject2, BySelector by, String message){
+        UiObject2 object = uiObject2.findObject(by);
+        if(null == object)
+            throw  new UIAutomatorTestException(message);
+        return object;
+    }
     /**
      * 返回一个找到的UIObject2，一秒找一次。超时返回null
      * @param by
@@ -172,6 +195,12 @@ public class BasePageObject {
      */
     protected UiObject2 findObject(UiObject2 uiObject2, BySelector by, long timeout){
         return uiObject2.wait(Until.findObject(by), timeout);
+    }
+    protected UiObject2 mustFindObject(UiObject2 uiObject2, BySelector by, long timeout, String message){
+        UiObject2 object = findObject(uiObject2, by, timeout);
+        if(null == object)
+            throw  new UIAutomatorTestException(message);
+        return object;
     }
     /**
      * 返回一个找到的UIObject2列表，如果找不到返回空列表
