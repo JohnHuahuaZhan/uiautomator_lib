@@ -1,11 +1,11 @@
-package com.example.uiautomator.kksport.po.app;
+package com.example.uiautomator.po.app;
 
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
 
-import com.example.uiautomator.kksport.po.CommonPo;
+import com.example.uiautomator.po.CommonPo;
 import com.uiautomator.lib.support.context.WatcherManager;
 import com.uiautomator.lib.support.exception.UIAutomatorTestException;
 

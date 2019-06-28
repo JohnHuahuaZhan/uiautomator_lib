@@ -1,9 +1,9 @@
-package com.example.uiautomator.kksport.service.basic;
+package com.example.uiautomator.service.basic;
 
-import com.example.uiautomator.kksport.po.app.LoginActivityPO;
-import com.example.uiautomator.kksport.po.app.MainActivityPO;
-import com.example.uiautomator.kksport.po.app.SplashActivityPO;
-import com.example.uiautomator.kksport.service.CommonService;
+import com.example.uiautomator.po.app.LoginActivityPO;
+import com.example.uiautomator.po.app.MainActivityPO;
+import com.example.uiautomator.po.app.SplashActivityPO;
+import com.example.uiautomator.service.CommonService;
 
 public class LoginService extends CommonService {
     protected String cell;

@@ -8,10 +8,22 @@ import android.view.accessibility.AccessibilityEvent;
 import com.uiautomator.lib.support.log.UIAutomatorLogger;
 
 public class ToastAccessibilityEventListener implements UiAutomation.OnAccessibilityEventListener {
-    private String toastMessage;
+    public class ListenerMessage{
+        public String packageName = "";
+        public String message = "";
 
-    public String getToastMessage() {
-        return toastMessage;
+        @Override
+        public String toString() {
+            return "ListenerMessage{" +
+                    "packageName='" + packageName + '\'' +
+                    ", message='" + message + '\'' +
+                    '}';
+        }
+    }
+    private ListenerMessage message = new ListenerMessage();
+
+    public ListenerMessage getToastMessage() {
+        return message;
     }
 
     @Override
@@ -26,8 +38,9 @@ public class ToastAccessibilityEventListener implements UiAutomation.OnAccessibi
         Parcelable parcelable = event.getParcelableData();
         //如果不是下拉通知栏消息，则为其它通知信息，包括Toast
         if (!(parcelable instanceof Notification)) {
-            toastMessage = (String) event.getText().get(0);
-            UIAutomatorLogger.d(toastMessage+Thread.currentThread().getId());
+            message.message = (String) event.getText().get(0);
+            message.packageName = sourcePackageName;
+            UIAutomatorLogger.d(message.toString());
         }
     }
 }

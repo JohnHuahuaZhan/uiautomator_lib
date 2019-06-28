@@ -7,6 +7,9 @@ import android.os.Environment;
 import androidx.annotation.NonNull;
 import androidx.test.core.app.ApplicationProvider;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 public class TestContext {
@@ -19,8 +22,13 @@ public class TestContext {
     private TestContext() {
         getInstrumentation().getUiAutomation().setOnAccessibilityEventListener(toastAccessibilityEventListener);
     }
-    public String getToastMessage(){
-        return toastAccessibilityEventListener.getToastMessage();
+    public Map<String, String> getToastMessage(){
+        String pkg =  toastAccessibilityEventListener.getToastMessage().packageName;
+        String message =  toastAccessibilityEventListener.getToastMessage().message;
+        Map<String, String> map = new HashMap<>();
+        map.put("package", pkg);
+        map.put("message", message);
+        return map;
     }
     public String getStringResources(int id){
         return context.getResources().getString(id);

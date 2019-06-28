@@ -1,4 +1,4 @@
-package com.example.uiautomator.kksport.service;
+package com.example.uiautomator.service;
 
 import com.example.uiautomator.kksport.R;
 import com.uiautomator.lib.support.service.BaseService;
