@@ -17,6 +17,7 @@ import com.uiautomator.lib.support.log.UIAutomatorLogger;
 import com.uiautomator.lib.support.time.IParamProvider;
 
 import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matcher;
 
 import java.util.List;
 
@@ -126,17 +127,36 @@ public class BasePageObject {
     protected List<UiObject2> findObjects(BySelector by) {
         return device.findObjects(by);
     }
+
+
     /**
-     * 返回一个找到的UIObject2列表，如果找不到返回null
+     * 自定义你的匹配器。如找到的的个数要大于某个值则使用 findObjects(Matchers.greaterThan(0),  by,  timeout)
+     * @param matcher
      * @param by
+     * @param timeout
      * @return
      */
-    protected List<UiObject2> findObjects(BySelector by, int expectedSize, long timeout, Runnable runnable) {
-        boolean b = Condition.waitForCondition(CoreMatchers.equalTo(expectedSize),()-> findObjects(by).size(),  pollingEvery, timeout, runnable);
+    protected List<UiObject2> findObjects(Matcher<Integer> matcher, BySelector by,  long timeout) {
+        boolean b = Condition.waitForCondition(matcher,()-> findObjects(by).size(),  pollingEvery, timeout, ()->{});
         if(!b)
             return null;
         else
             return findObjects(by);
+    }
+    protected List<UiObject2> findObjects(Matcher<Integer> matcher, BySelector by,  long timeout, Runnable runnable) {
+        boolean b = Condition.waitForCondition(matcher,()-> findObjects(by).size(),  pollingEvery, timeout, runnable);
+        if(!b)
+            return null;
+        else
+            return findObjects(by);
+    }
+    /**
+     * 返回一个找到的UIObject2列表，如果找不到指定个数而超时返回null
+     * @param by
+     * @return
+     */
+    protected List<UiObject2> findObjects(BySelector by, int expectedSize, long timeout, Runnable runnable) {
+        return findObjects(CoreMatchers.equalTo(expectedSize), by, timeout, runnable);
     }
     /**
      * 返回一个找到的UIObject2列表，如果找不到返回null
@@ -144,7 +164,7 @@ public class BasePageObject {
      * @return
      */
     protected List<UiObject2> findObjects(BySelector by, int expectedSize, long timeout) {
-       return findObjects(by, expectedSize, timeout,()->{});
+        return findObjects(by, expectedSize, timeout,()->{});
     }
 
 
