@@ -18,6 +18,7 @@ import com.uiautomator.lib.support.time.IParamProvider;
 
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 
 import java.util.List;
 
