@@ -5,12 +5,17 @@ package com.uiautomator.lib.support.network;
 import com.google.common.base.Strings;
 import com.uiautomator.lib.support.util.common.UrlUtil;
 
-import okhttp3.*;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
+
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 
 /**
  * default get http://localhost:80  utf-8

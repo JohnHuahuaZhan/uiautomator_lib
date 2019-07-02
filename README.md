@@ -6,7 +6,7 @@ cd uiautomator_lib
 git checkout master
 
 
-更新子模块：
+更新子模块（框架）：
 git submodule foreach git pull
 
 修改子模块
