@@ -125,6 +125,77 @@ public class BasePageObject {
         }, by,  pollingEvery, timeout, runnable, provider);
 
     }
+
+
+
+
+
+
+
+
+
+    /**
+     * 返回一个找到的UIObject2列表，如果找不到返回空列表
+     * @param by
+     * @return
+     */
+    protected List<UiObject2> findObjects(UiObject2 parent, BySelector by) {
+        return parent.findObjects(by);
+    }
+    protected List<UiObject2> findObjects(UiObject2 parent,Matcher<Integer> matcher, BySelector by,  long timeout, Runnable runnable) {
+        boolean b = Condition.waitForCondition(matcher,()-> findObjects(parent,by).size(),  pollingEvery, timeout, runnable);
+        if(!b)
+            return null;
+        else
+            return findObjects(parent,by);
+    }
+    /**
+     * 返回一个找到的UIObject2列表，如果找不到指定个数而超时返回null
+     * @param by
+     * @return
+     */
+    protected List<UiObject2> findObjects(UiObject2 parent,BySelector by, int expectedSize, long timeout, Runnable runnable) {
+        return findObjects(parent, CoreMatchers.equalTo(expectedSize), by, timeout, runnable);
+    }
+
+    /**
+     * 返回一个找到的UIObject2列表，如果找不到指定个数而超时返回null
+     * @param by
+     * @return
+     */
+    protected List<UiObject2> findObjects(UiObject2 parent,BySelector by, int expectedSize, long timeout) {
+        return findObjects(parent, by, expectedSize,timeout, ()->{});
+    }
+
+    protected List<UiObject2> mustFindObjects(UiObject2 parent,Matcher<Integer> matcher, BySelector by,  long timeout, Runnable runnable, String message) {
+        List<UiObject2> result = findObjects(parent, matcher, by, timeout, runnable);
+        if(null == result)
+            throw  new UIAutomatorTestException(message);
+
+        return result;
+    }
+    protected List<UiObject2> mustFindObjects(UiObject2 parent, Matcher<Integer> matcher, BySelector by,  long timeout,  String message) {
+        return mustFindObjects(parent, matcher, by, timeout, ()->{},message);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /**
      * 返回一个找到的UIObject2列表，如果找不到返回空列表
      * @param by
@@ -133,7 +204,6 @@ public class BasePageObject {
     protected List<UiObject2> findObjects(BySelector by) {
         return device.findObjects(by);
     }
-
 
     /**
      * 自定义你的匹配器。如找到的的个数要大于某个值则使用 findObjects(Matchers.greaterThan(0),  by,  timeout)
@@ -238,14 +308,8 @@ public class BasePageObject {
             throw  new UIAutomatorTestException(message);
         return object;
     }
-    /**
-     * 返回一个找到的UIObject2列表，如果找不到返回空列表
-     * @param by
-     * @return
-     */
-    protected List<UiObject2> findObjects(UiObject2 uiObject2,BySelector by) {
-        return uiObject2.findObjects(by);
-    }
+
+
 
     protected UiScrollable uiScrollable(UiSelector uiSelector){
         return new UiScrollable(uiSelector);
@@ -525,5 +589,24 @@ public class BasePageObject {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public void checked(UiObject2 uiObject2){
+        if(!uiObject2.isChecked())
+            uiObject2.click();
+    }
+    public void uncheck(UiObject2 uiObject2){
+        if(uiObject2.isChecked())
+            uiObject2.click();
+    }
+    public void mustChecked(UiObject2 uiObject2, String message){
+        checked(uiObject2);
+        if(!uiObject2.isChecked())
+            throw  new UIAutomatorTestException(message);
+    }
+    public void mustUncheck(UiObject2 uiObject2, String message){
+        uncheck(uiObject2);
+        if(uiObject2.isChecked())
+            throw  new UIAutomatorTestException(message);
     }
 }
