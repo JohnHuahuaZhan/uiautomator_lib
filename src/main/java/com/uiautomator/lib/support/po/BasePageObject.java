@@ -1,7 +1,11 @@
 package com.uiautomator.lib.support.po;
 
+import android.graphics.Point;
+import android.graphics.Rect;
+
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
+import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObject2;
@@ -15,6 +19,7 @@ import com.uiautomator.lib.support.context.TestContext;
 import com.uiautomator.lib.support.exception.UIAutomatorTestException;
 import com.uiautomator.lib.support.log.UIAutomatorLogger;
 import com.uiautomator.lib.support.time.IParamProvider;
+import com.uiautomator.lib.support.time.Sleeper;
 
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matcher;
@@ -143,6 +148,16 @@ public class BasePageObject {
             return null;
         else
             return findObjects(by);
+    }
+    protected List<UiObject2> mustFindObjects(Matcher<Integer> matcher, BySelector by,  long timeout, Runnable runnable, String message) {
+        List<UiObject2> result = findObjects(matcher, by, timeout, runnable);
+        if(null == result)
+            throw  new UIAutomatorTestException(message);
+
+        return result;
+    }
+    protected List<UiObject2> mustFindObjects(Matcher<Integer> matcher, BySelector by,  long timeout,  String message) {
+       return mustFindObjects(matcher, by, timeout, ()->{},message);
     }
     protected List<UiObject2> findObjects(Matcher<Integer> matcher, BySelector by,  long timeout, Runnable runnable) {
         boolean b = Condition.waitForCondition(matcher,()-> findObjects(by).size(),  pollingEvery, timeout, runnable);
@@ -280,13 +295,235 @@ public class BasePageObject {
             return false;
         }
     }
-    public boolean
-    swipeUpIgnoreException(UiObject object, int steps){
+    public boolean swipeUpIgnoreException(UiObject object, int steps){
         try {
             return object.swipeUp(steps);
         } catch (UiObjectNotFoundException e) {
             UIAutomatorLogger.e(e.getMessage());
             return false;
+        }
+    }
+
+    public void swipeDown(UiObject2 object, float percent, int speed){
+        object.swipe(Direction.DOWN, percent, speed);
+    }
+    public void swipeDown(UiObject2 object, float percent){
+        object.swipe(Direction.DOWN, percent);
+    }
+
+    public void swipeUp(UiObject2 object, float percent, int speed){
+        object.swipe(Direction.UP, percent, speed);
+    }
+    public void swipeUp(UiObject2 object,  float percent){
+        object.swipe(Direction.UP, percent);
+    }
+
+    //swipe
+
+
+    /**
+     * swipe from x,y.
+     * @param direction
+     * @param pixels
+     * @param speed pixel per second
+     */
+    public  void swipe(int x,int  y, Direction direction, int pixels, int speed){
+
+        double  time = (double) pixels / (double)speed;
+        int step = (int) (time * 1000 / 5);
+        int ex = x;
+        int ey = y;
+
+        switch (direction){
+            case UP:
+                ey = y - pixels;
+                break;
+            case DOWN:
+                ey = y + pixels;
+                break;
+            case LEFT:
+                ex = x - pixels;
+                break;
+            case RIGHT:
+                ex = x + pixels;
+                break;
+            default:
+                break;
+        }
+
+        getDevice().swipe(x,y,ex,ey,step);
+    }
+
+    /**
+     * swipe from point to point
+     * @param start
+     * @param end
+     * @param speed
+     */
+    public  void swipe(Point start,Point end,int speed){
+        int pixels = (int) Math.sqrt(Math.pow(end.x - start.x,2)+ Math.pow(end.y - start.y,2));
+        double  time = (double) pixels / (double)speed;
+        int step = (int) (time * 1000 / 5);
+        getDevice().swipe(start.x,start.y,end.x,end.y,step);
+    }
+    public static enum START_POINT{
+        LEFT_TOP,
+        RIGHT_TOP,
+        CENTER,
+        LEFT_BOTTOM,
+        RIGHT_BOTTOM
+    }
+    /**
+     * swipe from uiObject2 start_point
+     * @param object2
+     * @param pixel 像素
+     * @param pixelSpeed pixel per second
+     */
+    public  void swipe(UiObject2 object2,int pixel,int pixelSpeed,Direction direction,START_POINT start_point){
+        Rect rect = object2.getVisibleBounds();
+
+
+        int x = rect.centerX();
+        int y = rect.centerY();
+        switch (start_point){
+            case LEFT_TOP:
+                x = rect.left;
+                y = rect.top;
+                break;
+            case RIGHT_TOP:
+                x = rect.right;
+                y = rect.top;
+                break;
+            case CENTER:
+                x = rect.centerX();
+                y = rect.centerY();
+                break;
+            case LEFT_BOTTOM:
+                x = rect.left;
+                y = rect.bottom;
+                break;
+            case RIGHT_BOTTOM:
+                x = rect.right;
+                y = rect.bottom;
+                break;
+            default:
+                break;
+        }
+
+        swipe(x,y,direction,pixel,pixelSpeed);
+
+    }
+    /**
+     * swipe from uiObject2 start_point
+     * @param object2
+     * @param times 几个对象高度
+     * @param speed 每秒几个对象
+     */
+    public  void swipe(UiObject2 object2,int times,double speed,Direction direction,START_POINT start_point){
+        int pixel = object2.getVisibleBounds().height() * times;
+        int pixelSpeed = (int) (object2.getVisibleBounds().height() * speed);
+        if(direction == Direction.LEFT || direction == Direction.RIGHT){
+            pixel = object2.getVisibleBounds().width() * times;
+            pixelSpeed = (int) (object2.getVisibleBounds().width() * speed);
+        }
+        swipe(object2, pixel, pixelSpeed, direction, start_point);
+    }
+    public  Point getPointByStartPoint(UiObject2 object,START_POINT start_point){
+        Rect rect = object.getVisibleBounds();
+        int ex = rect.centerX();
+        int ey = rect.centerY();
+        switch (start_point){
+            case LEFT_TOP:
+                ex = rect.left;
+                ey = rect.top;
+                break;
+            case RIGHT_TOP:
+                ex = rect.right;
+                ey = rect.top;
+                break;
+            case CENTER:
+                ex = rect.centerX();
+                ey = rect.centerY();
+                break;
+            case LEFT_BOTTOM:
+                ex = rect.left;
+                ey = rect.bottom;
+                break;
+            case RIGHT_BOTTOM:
+                ex = rect.right;
+                ey = rect.bottom;
+                break;
+            default:
+                break;
+        }
+        return new Point(ex,ey);
+    }
+
+
+    /**
+     * swipe from p 2 p.
+     * @param start
+     * @param end
+     * @param pixelSpeed
+     * @param start_point
+     * @param start_point_end pixel per second
+     */
+    public  void swipe(UiObject2 start,UiObject2 end,int pixelSpeed,START_POINT start_point,START_POINT start_point_end){
+        Point startPoint = getPointByStartPoint(start,start_point);
+        Point endPoint = getPointByStartPoint(end,start_point_end);
+        swipe(startPoint, endPoint,pixelSpeed);
+    }
+
+    /**
+     * swipe from p 2 p.
+     * @param start
+     * @param end
+     * @param speedObjectHigh 速度参考对象。高度作为参考
+     * @param speed 几个参考对象高度每秒
+     * @param start_point
+     * @param start_point_end
+     */
+    public  void swipe(UiObject2 start,UiObject2 end,UiObject2 speedObjectHigh,double speed,START_POINT start_point,START_POINT start_point_end){
+        int pixelSpeed = (int) (speedObjectHigh.getVisibleBounds().height() * speed);
+        Point startPoint = getPointByStartPoint(start,start_point);
+        Point endPoint = getPointByStartPoint(end,start_point_end);
+        swipe(startPoint, endPoint,pixelSpeed);
+    }
+    /**
+     * swipe from center
+     * @param direction
+     * @param pixels
+     * @param speed pixel per second
+     */
+    public  void swipe(Direction direction, int pixels, int speed){
+        int x = getDevice().getDisplayWidth() / 2;
+        int y = getDevice().getDisplayHeight() / 2;
+        swipe(x,y,direction,pixels,speed);
+    }
+
+    /**
+     * swipe from center
+     * @param direction
+     * @param times 几个对象高度
+     * @param speed 每秒几个对象
+     */
+    public  void swipe(UiObject2 object2,Direction direction, int times, double speed){
+        int x = device.getDisplayWidth() / 2;
+        int y = device.getDisplayHeight() / 2;
+        int pixel = object2.getVisibleBounds().height() * times;
+        int pixelSpeed = (int) (object2.getVisibleBounds().height() * speed);
+        if(direction == Direction.LEFT || direction == Direction.RIGHT){
+            pixel = object2.getVisibleBounds().width() * times;
+            pixelSpeed = (int) (object2.getVisibleBounds().width() * speed);
+        }
+        swipe(x,y,direction,pixel,pixelSpeed);
+    }
+
+    public void systemWait(long milli){
+        try {
+            Sleeper.SYSTEM_SLEEPER.sleep(milli);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }
