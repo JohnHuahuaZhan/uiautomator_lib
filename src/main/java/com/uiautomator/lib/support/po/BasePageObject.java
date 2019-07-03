@@ -434,6 +434,10 @@ public class BasePageObject {
         LEFT_TOP,
         RIGHT_TOP,
         CENTER,
+        H_CENTER_TOP,
+        H_CENTER_BOTTOM,
+        V_CENTER_LEFT,
+        V_CENTER_RIGHT,
         LEFT_BOTTOM,
         RIGHT_BOTTOM
     }
@@ -444,7 +448,26 @@ public class BasePageObject {
      * @param pixelSpeed pixel per second
      */
     public  void swipe(UiObject2 object2,int pixel,int pixelSpeed,Direction direction,START_POINT start_point){
-        Rect rect = object2.getVisibleBounds();
+        Point p = getPointByStartPoint(object2, start_point);
+        swipe(p.x,p.y,direction,pixel,pixelSpeed);
+    }
+    /**
+     * swipe from uiObject2 start_point
+     * @param object2
+     * @param times 几个对象高度
+     * @param speed 每秒几个对象
+     */
+    public  void swipe(UiObject2 object2,int times,double speed,Direction direction,START_POINT start_point){
+        int pixel = object2.getVisibleBounds().height() * times;
+        int pixelSpeed = (int) (object2.getVisibleBounds().height() * speed);
+        if(direction == Direction.LEFT || direction == Direction.RIGHT){
+            pixel = object2.getVisibleBounds().width() * times;
+            pixelSpeed = (int) (object2.getVisibleBounds().width() * speed);
+        }
+        swipe(object2, pixel, pixelSpeed, direction, start_point);
+    }
+    public  Point getPointByStartPoint(UiObject2 object,START_POINT start_point){
+        Rect rect = object.getVisibleBounds();
 
 
         int x = rect.centerX();
@@ -470,57 +493,26 @@ public class BasePageObject {
                 x = rect.right;
                 y = rect.bottom;
                 break;
-            default:
+            case H_CENTER_TOP:
+                x = rect.centerX();
+                y = rect.top;
                 break;
-        }
-
-        swipe(x,y,direction,pixel,pixelSpeed);
-
-    }
-    /**
-     * swipe from uiObject2 start_point
-     * @param object2
-     * @param times 几个对象高度
-     * @param speed 每秒几个对象
-     */
-    public  void swipe(UiObject2 object2,int times,double speed,Direction direction,START_POINT start_point){
-        int pixel = object2.getVisibleBounds().height() * times;
-        int pixelSpeed = (int) (object2.getVisibleBounds().height() * speed);
-        if(direction == Direction.LEFT || direction == Direction.RIGHT){
-            pixel = object2.getVisibleBounds().width() * times;
-            pixelSpeed = (int) (object2.getVisibleBounds().width() * speed);
-        }
-        swipe(object2, pixel, pixelSpeed, direction, start_point);
-    }
-    public  Point getPointByStartPoint(UiObject2 object,START_POINT start_point){
-        Rect rect = object.getVisibleBounds();
-        int ex = rect.centerX();
-        int ey = rect.centerY();
-        switch (start_point){
-            case LEFT_TOP:
-                ex = rect.left;
-                ey = rect.top;
+            case H_CENTER_BOTTOM:
+                x = rect.centerX();
+                y = rect.bottom;
                 break;
-            case RIGHT_TOP:
-                ex = rect.right;
-                ey = rect.top;
+            case V_CENTER_LEFT:
+                x = rect.left;
+                y = rect.centerY();
                 break;
-            case CENTER:
-                ex = rect.centerX();
-                ey = rect.centerY();
-                break;
-            case LEFT_BOTTOM:
-                ex = rect.left;
-                ey = rect.bottom;
-                break;
-            case RIGHT_BOTTOM:
-                ex = rect.right;
-                ey = rect.bottom;
+            case V_CENTER_RIGHT:
+                x = rect.right;
+                y = rect.centerY();
                 break;
             default:
                 break;
         }
-        return new Point(ex,ey);
+        return new Point(x,y);
     }
 
 
