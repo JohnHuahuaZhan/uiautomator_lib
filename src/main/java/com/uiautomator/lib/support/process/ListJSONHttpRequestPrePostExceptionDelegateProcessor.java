@@ -1,6 +1,7 @@
 package com.uiautomator.lib.support.process;
 
 
+import com.uiautomator.lib.support.exception.UIAutomatorTestException;
 import com.uiautomator.lib.support.network.HttpRequestHelper;
 import com.uiautomator.lib.support.network.MyRequest;
 import com.uiautomator.lib.support.network.MyResponse;
@@ -24,10 +25,18 @@ public class ListJSONHttpRequestPrePostExceptionDelegateProcessor extends Abstra
         this( requestJsonString, rulePrePostCallback, requestDelegate, false);
     }
 
+    /**
+     *
+     * @param requestJsonString  请求的json
+     * @param rulePrePostCallback 回调
+     * @param requestDelegate 接口请求代理
+     * @param needAutoPut
+     */
     public ListJSONHttpRequestPrePostExceptionDelegateProcessor(String requestJsonString, IHttpPrePostExceptionCallback rulePrePostCallback, IRequestDelegate requestDelegate, boolean needAutoPut) {
         this.requestJsonString = requestJsonString;
         this.rulePrePostCallback = rulePrePostCallback;
         this.requestDelegate = requestDelegate;
+        this.needAutoPut = needAutoPut;
     }
 
     //设置数据源，用于解析你的文件上传的时候传来的路径，并返回字节数组
@@ -76,7 +85,7 @@ public class ListJSONHttpRequestPrePostExceptionDelegateProcessor extends Abstra
                 }
             }
         }catch (Exception e){
-
+            throw new UIAutomatorTestException(e.getMessage(), e);
         }
 
     }
