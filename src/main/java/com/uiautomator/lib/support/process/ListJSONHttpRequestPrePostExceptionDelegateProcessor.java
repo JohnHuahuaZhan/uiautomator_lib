@@ -76,12 +76,15 @@ public class ListJSONHttpRequestPrePostExceptionDelegateProcessor extends Abstra
 
 
                 rulePrePostCallback.pre(request, response,deliverMap);
-
+                boolean anyRequestError = false;
                 try {
                     response = requestDelegate.delegate(request);
-                    rulePrePostCallback.post(request,response,deliverMap);
                 } catch (Exception e) {
+                    anyRequestError = true;
                     rulePrePostCallback.exception(request,e,deliverMap);
+                }
+                if(!anyRequestError){
+                    rulePrePostCallback.post(request, response, deliverMap);
                 }
             }
         }catch (Exception e){
