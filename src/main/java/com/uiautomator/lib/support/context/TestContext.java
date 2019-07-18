@@ -1,5 +1,7 @@
 package com.uiautomator.lib.support.context;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
@@ -67,5 +69,18 @@ public class TestContext {
     }
     public  String getSystemVersion() {
         return android.os.Build.VERSION.RELEASE;
+    }
+
+
+    /**
+     * 模拟器可能用不了，需要真机
+     * @param text
+     */
+    public void setClipBoard(String text){
+        ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        //创建ClipData对象
+        ClipData clipData = ClipData.newPlainText("uiautomator_text", text);
+        //添加ClipData对象到剪切板中
+        clipboardManager.setPrimaryClip(clipData);
     }
 }
