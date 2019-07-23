@@ -57,8 +57,10 @@ public class TestContext {
 
 
 
-
-
+    protected UiDevice device = UiDevice.getInstance(getInstrumentation());
+    public UiDevice getDevice() {
+        return device;
+    }
 
     private static final TestContext ourInstance = new TestContext();
     private ToastAccessibilityEventListener toastAccessibilityEventListener = new ToastAccessibilityEventListener();
@@ -152,11 +154,10 @@ public class TestContext {
     }
 
     /**
-     * png pic
-     * @param device
+     * jpeg pic
      * @return
      */
-    public byte[] screenShot(UiDevice device,  float scale, int quality){
+    public byte[] screenShot(int quality){
         Bitmap screenshot = getUiAutomation().takeScreenshot();
         if (screenshot == null) {
             return null;
@@ -166,7 +167,7 @@ public class TestContext {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             bos = new BufferedOutputStream(byteArrayOutputStream);
             if (bos != null) {
-                screenshot.compress(Bitmap.CompressFormat.PNG, quality, bos);
+                screenshot.compress(Bitmap.CompressFormat.JPEG, quality, bos);
                 bos.flush();
             }
             return byteArrayOutputStream.toByteArray();
@@ -186,18 +187,16 @@ public class TestContext {
     }
     /**
      * png pic
-     * @param device
      * @return
      */
-    public byte[] screenShot(UiDevice device){
-        return screenShot(device, 1.0f, 90);
+    public byte[] screenShot(){
+        return screenShot(100);
     }
     /**
-     * png pic
-     * @param device
+     * JPEG pic
      * @return
      */
-    public byte[] screenShot(UiDevice device, UiObject2 uiObject,  float scale, int quality){
+    public byte[] screenShot( UiObject2 uiObject, int quality){
         Bitmap screenshot = getUiAutomation().takeScreenshot();
         if (screenshot == null) {
             return null;
@@ -206,14 +205,13 @@ public class TestContext {
             return null;
         }
         Rect rect = uiObject.getVisibleBounds();
-        int wi = screenshot.getWidth();
         Bitmap real = Bitmap.createBitmap(screenshot, rect.left, rect.top, rect.width(), rect.height());
         BufferedOutputStream bos = null;
         try {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             bos = new BufferedOutputStream(byteArrayOutputStream);
             if (bos != null) {
-                real.compress(Bitmap.CompressFormat.PNG, quality, bos);
+                real.compress(Bitmap.CompressFormat.JPEG, quality, bos);
                 bos.flush();
             }
             return byteArrayOutputStream.toByteArray();
@@ -234,11 +232,10 @@ public class TestContext {
     }
     /**
      * png pic
-     * @param device
      * @return
      */
-    public byte[] screenShot(UiDevice device, UiObject2 uiObject){
-       return screenShot(device, uiObject, 1.0f, 90);
+    public byte[] screenShot(UiObject2 uiObject){
+       return screenShot( uiObject, 100);
     }
 
     public String uuid(){
