@@ -120,6 +120,15 @@ public class HttpRequestUtil {
                                              String path,
                                              String port,
                                              String requestCharset,
+                                             Map<String, MultiText> formTextData,
+                                             Map<String, MultiFile> formFileData) throws IOException {
+        return buildPostRequest(scheme, host, path, port, requestCharset, POST_FORM_DATA, null, formTextData, formFileData, null);
+    }
+    public static MyRequest buildPostRequest(String scheme,
+                                             String host,
+                                             String path,
+                                             String port,
+                                             String requestCharset,
                                              Raw raw) throws IOException {
         return buildPostRequest(scheme, host, path, port, requestCharset, POST_RAW, null, null, null, raw);
     }
