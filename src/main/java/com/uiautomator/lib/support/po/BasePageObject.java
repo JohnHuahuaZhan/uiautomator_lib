@@ -2,6 +2,7 @@ package com.uiautomator.lib.support.po;
 
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.view.KeyEvent;
 
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
@@ -20,10 +21,10 @@ import com.uiautomator.lib.support.exception.UIAutomatorTestException;
 import com.uiautomator.lib.support.log.UIAutomatorLogger;
 import com.uiautomator.lib.support.time.IParamProvider;
 import com.uiautomator.lib.support.time.Sleeper;
+import com.uiautomator.lib.support.util.common.KeyUtil;
 
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
 
 import java.util.List;
 
@@ -600,5 +601,23 @@ public class BasePageObject {
         uncheck(uiObject2);
         if(uiObject2.isChecked())
             throw  new UIAutomatorTestException(message);
+    }
+    public void pressKey(String message){
+        int[] keyCodes = KeyUtil.stringToKeyCodeArray(message);
+        for (int keyCode : keyCodes) {
+            getDevice().pressKeyCode(keyCode);
+        }
+    }
+    public void pressKey(int code){
+        getDevice().pressKeyCode(code);
+    }
+    public void pressKey(char c){
+        getDevice().pressKeyCode(KeyUtil.getCode(c));
+    }
+    public void pressKeyCTRL(char c){
+       getDevice().pressKeyCode(KeyUtil.getCode(c), KeyEvent.META_CTRL_MASK);
+    }
+    public void pressKeyCTRL(int code){
+        getDevice().pressKeyCode(code, KeyEvent.META_CTRL_MASK);
     }
 }
