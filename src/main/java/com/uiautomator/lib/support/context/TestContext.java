@@ -10,6 +10,8 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Environment;
+import android.telephony.TelephonyManager;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.test.core.app.ApplicationProvider;
@@ -24,9 +26,11 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.content.Context.TELEPHONY_SERVICE;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 public class TestContext {
@@ -238,7 +242,48 @@ public class TestContext {
        return screenShot( uiObject, 100);
     }
 
-    public String uuid(){
+    public String uuid1(){
         return Build.FINGERPRINT;
+    }
+    public String uuid(){
+        return String.format("%s-%s-%s",getSystemModel(), sn(), getSystemVersion());
+    }
+
+    /**
+     * SN码是Serial Number的缩写，有时也叫SerialNo，也就是产品序列号，产品序列是为了验证“产品的合法身份”而引入的一个概念，
+     * 它是用来保障用户的正版权益，享受合法服务的；一套正版的产品只对应一组产品序列号。别称：机器码、认证码、注册申请码等。
+     * SN码就是软件开发商给软件的一个识别码，和人的身份证号码类似，其作用主要是为了防止自己的软件被用户盗用。用户要使用其
+     * 软件就必须知道序列号。
+     * MIUI输入*#*#64663#*#*可查询
+     * @return
+     */
+    public String sn(){
+        String serial = "";
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {//9.0+
+                serial = Build.getSerial();
+            } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {//8.0+
+                serial = Build.SERIAL;
+            } else {//8.0-
+                Class<?> c = Class.forName("android.os.SystemProperties");
+                Method get = c.getMethod("get", String.class);
+                serial = (String) get.invoke(c, "ro.serialno");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("e", "读取设备序列号异常：" + e.toString());
+        }
+        return serial;
+    }
+
+    /**
+     *国际移动设备识别码（International Mobile Equipment Identity，IMEI），即通常所说的手机序列号、手机“串号”，
+     * 用于在移动电话网络中识别每一部独立的手机等移动通信设备，相当于移动电话的身份证
+     * @return
+     */
+    public String imei(){
+        TelephonyManager TelephonyMgr = (TelephonyManager)context.getSystemService(TELEPHONY_SERVICE);
+        String szImei = TelephonyMgr.getDeviceId();
+        return szImei;
     }
 }

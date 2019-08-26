@@ -103,7 +103,7 @@ public class BaseService {
     }
     public void startApp(String packageName){
         final Intent intent = testContext.getLaunchIntentForPackage(packageName);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);    // Clear out any previous instances
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);    // Clear out any previous instances
         testContext.startActivity(intent);
     }
 
