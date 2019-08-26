@@ -8,13 +8,10 @@ import com.uiautomator.lib.support.network.MyRequest;
 import com.uiautomator.lib.support.network.util.HttpRequestUtil;
 import com.uiautomator.lib.support.util.ScreenShot;
 
-import org.junit.Assert;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,8 +25,6 @@ public class TestWatcherRule extends TestWatcher {
     @Override
     protected void failed(Throwable e, Description description) {
         super.failed(e, description);
-        StringWriter stringWriter = new StringWriter();
-        e.printStackTrace(new PrintWriter(stringWriter, true));
         byte[] shot = TestContext.getInstance().screenShot(100);
         MultiFile multiFile = new MultiFile("shot",shot,"image/jpeg");
         Map<String, MultiFile> m = new HashMap<>();
@@ -38,7 +33,7 @@ public class TestWatcherRule extends TestWatcher {
             MyRequest signRequest = HttpRequestUtil.buildPostRequest("http", "192.168.16.2", "/api/v1/img/temp/upload", "8085", "utf-8", null,m);
             byte[] result = HttpRequestUtil.request(signRequest);
             String img = String.format("<br/><img src=\"%s\"/>",new String(result));
-            Assert.fail("失败：截图"+img+"堆栈跟踪"+stringWriter.getBuffer().toString());
+            throw new RuntimeException("失败：截图"+img+"堆栈跟踪："+ e.getMessage()+":"+description.getClassName()+":"+description.getMethodName());
         } catch (IOException e1) {
             e1.printStackTrace();
         }
