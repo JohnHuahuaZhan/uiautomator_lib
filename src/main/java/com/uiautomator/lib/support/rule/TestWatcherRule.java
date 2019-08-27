@@ -7,6 +7,7 @@ import com.uiautomator.lib.support.network.MultiFile;
 import com.uiautomator.lib.support.network.MyRequest;
 import com.uiautomator.lib.support.network.util.HttpRequestUtil;
 import com.uiautomator.lib.support.util.ScreenShot;
+import com.uiautomator.lib.support.util.exception.ExceptionHelper;
 
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
@@ -32,8 +33,9 @@ public class TestWatcherRule extends TestWatcher {
         try {
             MyRequest signRequest = HttpRequestUtil.buildPostRequest("http", "192.168.16.2", "/api/v1/img/temp/upload", "8085", "utf-8", null,m);
             byte[] result = HttpRequestUtil.request(signRequest);
-            String img = String.format("<br/><img src=\"%s\"/>",new String(result));
-            throw new RuntimeException("失败：截图"+img+"堆栈跟踪："+ e.getMessage()+":"+description.getClassName()+":"+description.getMethodName());
+            String img = new String(result);
+            StackTraceElement stackTraceElement = new StackTraceElement(TestWatcherRule.class.getName(), "failed", "截图："+img, 37);
+            ExceptionHelper.cutStacktrace(e, 6, stackTraceElement);
         } catch (IOException e1) {
             e1.printStackTrace();
         }
