@@ -72,6 +72,7 @@ public class TestContext {
         return ourInstance;
     }
     Context context = ApplicationProvider.getApplicationContext();
+    Context insContext = InstrumentationRegistry.getInstrumentation().getContext();
     private TestContext() {
         getInstrumentation().getUiAutomation().setOnAccessibilityEventListener(toastAccessibilityEventListener);
     }
@@ -92,7 +93,7 @@ public class TestContext {
         return context.getPackageManager().getLaunchIntentForPackage(packageName);
     }
     public void startActivity(Intent intent){
-        context.startActivity(intent);
+        insContext.startActivity(intent);
     }
     public String getPackageName(){
         return context.getPackageName();
