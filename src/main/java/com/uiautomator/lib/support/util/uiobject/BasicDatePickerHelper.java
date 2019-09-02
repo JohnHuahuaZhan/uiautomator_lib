@@ -4,8 +4,10 @@ import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
 
 import com.uiautomator.lib.support.exception.UIAutomatorTestException;
+import com.uiautomator.lib.support.log.UIAutomatorLogger;
 import com.uiautomator.lib.support.po.BasePageObject;
 import com.uiautomator.lib.support.time.IProvider;
+import com.uiautomator.lib.support.time.Sleeper;
 
 /**
  *    BasicDatePickerHelper basicDatePickerHelper = new BasicDatePickerHelper();
@@ -23,6 +25,7 @@ import com.uiautomator.lib.support.time.IProvider;
  *         basicDatePickerHelper.selectYear().selectMonth().selectDay().accept();
  */
 public  class BasicDatePickerHelper extends BasePageObject {
+
     int margin;
     int maxRetry;
     int speed;
@@ -139,33 +142,41 @@ public  class BasicDatePickerHelper extends BasePageObject {
         return provider.get().getText();
     }
     private void select(IProvider<UiObject2> provider, int target){
-        int start =Integer.valueOf(getText(provider));
         boolean backward = true;
-        int compare = start - target;
-        if(compare == 0)
-            return;
-        if(compare < 0)
-            backward = false;
 
-        int current = start;
         int count = 0;
+        int current = Integer.valueOf(getText(provider));
+        int last = current;
         while (true){
-            if(backward){
-                swipeDown(provider);
-            }else {
-                swipeUp(provider);
-            }
             current = Integer.valueOf(getText(provider));
+            if(last == current){//预防滚动后由于值没有及时设置到框中，导致读取到的还是上一次的值。
+                try {
+                    Sleeper.SYSTEM_SLEEPER.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                current = Integer.valueOf(getText(provider));
+            }
+            last = current;
+            UIAutomatorLogger.d(current+"year");
             if(current == target)
                 return;
-            count++;
-            if(count >= maxRetry)
-                throw new UIAutomatorTestException("DatePicker 不能到达指定位置："+target);
-            compare = current - target;
+            int compare = current - target;
             if(compare == 0)
                 return;
             if(compare < 0)
                 backward = false;
+            if(backward){
+                UIAutomatorLogger.d("scroll year back");
+                swipeDown(provider);
+            }else { UIAutomatorLogger.d("scroll year forward");
+                swipeUp(provider);
+            }
+
+            count++;
+            if(count >= maxRetry)
+                throw new UIAutomatorTestException("DatePicker 不能到达指定位置："+target);
+
         }
     }
     public BasicDatePickerHelper  selectYear(){
