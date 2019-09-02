@@ -31,9 +31,9 @@ public  class BasicDatePickerHelper extends BasePageObject {
     IProvider<UiObject2> dayProvider;
     IProvider<UiObject2> acceptProvider;
     IProvider<UiObject2> cancelProvider;
-    String year;
-    String month;
-    String day;
+    int year;
+    int month;
+    int day;
 
 
     public void setMargin(int margin) {
@@ -72,15 +72,15 @@ public  class BasicDatePickerHelper extends BasePageObject {
         this.cancelProvider = cancelProvider;
     }
 
-    public void setYear(String year) {
+    public void setYear(int year) {
         this.year = year;
     }
 
-    public void setMonth(String month) {
+    public void setMonth(int month) {
         this.month = month;
     }
 
-    public void setDay(String day) {
+    public void setDay(int day) {
         this.day = day;
     }
 
@@ -112,15 +112,15 @@ public  class BasicDatePickerHelper extends BasePageObject {
         return cancelProvider;
     }
 
-    public String getYear() {
+    public int getYear() {
         return year;
     }
 
-    public String getMonth() {
+    public int getMonth() {
         return month;
     }
 
-    public String getDay() {
+    public int getDay() {
         return day;
     }
 
@@ -138,16 +138,16 @@ public  class BasicDatePickerHelper extends BasePageObject {
     private String getText(IProvider<UiObject2> provider){
         return provider.get().getText();
     }
-    private void select(IProvider<UiObject2> provider, String target){
-        String start =getText(provider);
+    private void select(IProvider<UiObject2> provider, int target){
+        int start =Integer.valueOf(getText(provider));
         boolean backward = true;
-        int compare = start.compareTo(target);
+        int compare = start - target;
         if(compare == 0)
             return;
         if(compare < 0)
             backward = false;
 
-        String current = start;
+        int current = start;
         int count = 0;
         while (true){
             if(backward){
@@ -155,12 +155,17 @@ public  class BasicDatePickerHelper extends BasePageObject {
             }else {
                 swipeUp(provider);
             }
-            current = getText(provider);
-            if(current.equals(target))
+            current = Integer.valueOf(getText(provider));
+            if(current == target)
                 return;
             count++;
             if(count >= maxRetry)
                 throw new UIAutomatorTestException("DatePicker 不能到达指定位置："+target);
+            compare = current - target;
+            if(compare == 0)
+                return;
+            if(compare < 0)
+                backward = false;
         }
     }
     public BasicDatePickerHelper  selectYear(){
