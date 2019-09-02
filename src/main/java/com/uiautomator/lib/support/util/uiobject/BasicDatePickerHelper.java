@@ -17,9 +17,9 @@ import com.uiautomator.lib.support.time.IProvider;
  *         basicDatePickerHelper.setCancelProvider(()->{return getDevice().findObject(By.res("android:id/button2"));});
  *         basicDatePickerHelper.setMargin(-20);
  *         basicDatePickerHelper.setSpeed(500);
- *         basicDatePickerHelper.setYear("2013");
- *         basicDatePickerHelper.setMonth("9");
- *         basicDatePickerHelper.setDay("26");
+ *         basicDatePickerHelper.setYear(2013);
+ *         basicDatePickerHelper.setMonth(9);
+ *         basicDatePickerHelper.setDay(26);
  *         basicDatePickerHelper.selectYear().selectMonth().selectDay().accept();
  */
 public  class BasicDatePickerHelper extends BasePageObject {
