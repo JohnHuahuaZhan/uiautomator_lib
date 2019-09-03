@@ -34,7 +34,8 @@ public class TestWatcherRule extends TestWatcher {
             MyRequest signRequest = HttpRequestUtil.buildPostRequest("http", "192.168.16.2", "/api/v1/img/temp/upload", "8085", "utf-8", null,m);
             byte[] result = HttpRequestUtil.request(signRequest);
             String img = new String(result);
-            StackTraceElement stackTraceElement = new StackTraceElement(TestWatcherRule.class.getName(), "failed", "截图："+img, 37);
+            Map<String, String> toast = TestContext.getInstance().getToastMessage();
+            StackTraceElement stackTraceElement = new StackTraceElement(TestWatcherRule.class.getName(), "failed", "截图："+img+":toast:"+toast, 37);
             ExceptionHelper.cutStacktrace(e, 6, stackTraceElement);
         } catch (IOException e1) {
             e1.printStackTrace();
